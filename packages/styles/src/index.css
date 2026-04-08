@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: oklch(0.45 0.15 250);
+  --color-secondary: oklch(0.55 0.15 300);
+  --color-accent: oklch(0.6 0.15 150);
+  --color-neutral: oklch(0.25 0 0);
+}
