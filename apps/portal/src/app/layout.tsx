@@ -31,6 +31,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </a>
             </div>
             <div className="flex-none">
+              <a href="/admin" className="btn btn-ghost">
+                Admin
+              </a>
               <button onClick={toggleTheme} className="btn btn-ghost btn-circle">
                 {theme === 'light' ? '🌙' : '☀️'}
               </button>

@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import { connectToDatabase } from './models/index.js';
 import usersRouter from './routes/users.js';
 import sessionsRouter from './routes/sessions.js';
-import { errorHandler } from './middleware/error.js';
+import { handleError } from './middleware/error.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -26,7 +26,7 @@ app.get('/health', (_req, res) => {
 app.use('/users', usersRouter);
 app.use('/sessions', sessionsRouter);
 
-app.use(errorHandler);
+app.use(handleError);
 
 async function startServer() {
   try {

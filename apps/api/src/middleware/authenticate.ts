@@ -14,7 +14,7 @@ export function extractBearerToken(authHeader?: string): string | undefined {
   return authHeader.slice(7);
 }
 
-export async function authMiddleware(
+export async function authenticate(
   req: AuthRequest,
   _res: Response,
   next: NextFunction

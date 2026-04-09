@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { User } from '../models/User.js';
 import { Session } from '../models/Session.js';
 import { UnauthorizedError, AppError } from './error.js';
-import { AuthRequest } from './auth.js';
+import { AuthRequest } from './authenticate.js';
 import { comparePassword } from '../utils/hash.js';
 import { signJWT } from '../utils/jwt.js';
 import { USER_STATUS } from '@user-management-system/types';

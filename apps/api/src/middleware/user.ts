@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { User } from '../models/User.js';
 import { USER_ROLE, USER_STATUS } from '@user-management-system/types';
 import { ForbiddenError, NotFoundError, ConflictError } from './error.js';
-import { AuthRequest } from './auth.js';
+import { AuthRequest } from './authenticate.js';
 import { hashPassword } from '../utils/hash.js';
 
 export async function register(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
@@ -49,15 +49,26 @@ export async function listUsers(
   next: NextFunction
 ): Promise<void> {
   try {
-    if (req.user?.role !== USER_ROLE.ADMIN) {
-      throw new ForbiddenError('Only admins can list users');
-    }
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 6));
+    const skip = (page - 1) * limit;
 
-    const users = await User.find().select('-password').sort({ creationTime: -1 });
+    const [users, total] = await Promise.all([
+      User.find().select('-password').sort({ creationTime: -1 }).skip(skip).limit(limit),
+      User.countDocuments(),
+    ]);
 
     res.json({
       success: true,
-      data: users,
+      data: {
+        users,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -146,10 +157,6 @@ export async function deleteUser(
   next: NextFunction
 ): Promise<void> {
   try {
-    if (req.user!.role !== USER_ROLE.ADMIN) {
-      throw new ForbiddenError('Only admins can delete users');
-    }
-
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       throw new NotFoundError('User not found');

@@ -2,10 +2,10 @@ jest.mock('../../models/Session');
 jest.mock('../../utils/jwt');
 
 import { Response, NextFunction } from 'express';
-import { authMiddleware, extractBearerToken } from '../../middleware/auth';
+import { authenticate, extractBearerToken } from '../../middleware/authenticate';
 import { verifyJWT } from '../../utils/jwt';
 import { Session } from '../../models/Session';
-import { AuthRequest } from '../../middleware/auth';
+import { AuthRequest } from '../../middleware/authenticate';
 import { UnauthorizedError } from '../../middleware/error';
 
 describe('auth middleware', () => {
@@ -45,7 +45,7 @@ describe('auth middleware', () => {
     });
   });
 
-  describe('authMiddleware', () => {
+  describe('authenticate', () => {
     it('should set req.user on valid cookie', async () => {
       (verifyJWT as jest.Mock).mockReturnValue({
         sessionId: 'session-id-123',
@@ -60,7 +60,7 @@ describe('auth middleware', () => {
 
       mockReq.cookies = { token: 'valid-jwt-token' };
 
-      await authMiddleware(mockReq as AuthRequest, mockRes as Response, mockNext);
+      await authenticate(mockReq as AuthRequest, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith();
       expect((mockReq as AuthRequest).user).toEqual({
@@ -85,7 +85,7 @@ describe('auth middleware', () => {
 
       mockReq.headers = { authorization: 'Bearer valid-jwt-token' };
 
-      await authMiddleware(mockReq as AuthRequest, mockRes as Response, mockNext);
+      await authenticate(mockReq as AuthRequest, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith();
       expect((mockReq as AuthRequest).user).toEqual({
@@ -100,7 +100,7 @@ describe('auth middleware', () => {
       mockReq.cookies = { token: 'cookie-token' };
       mockReq.headers = { authorization: 'Bearer bearer-token' };
 
-      await authMiddleware(mockReq as AuthRequest, mockRes as Response, mockNext);
+      await authenticate(mockReq as AuthRequest, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError));
       expect((mockNext as jest.Mock).mock.calls[0][0].message).toBe(
@@ -109,7 +109,7 @@ describe('auth middleware', () => {
     });
 
     it('should throw "No token provided" when neither cookie nor bearer', async () => {
-      await authMiddleware(mockReq as AuthRequest, mockRes as Response, mockNext);
+      await authenticate(mockReq as AuthRequest, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError));
       expect((mockNext as jest.Mock).mock.calls[0][0].message).toBe('No token provided');
@@ -120,7 +120,7 @@ describe('auth middleware', () => {
 
       mockReq.cookies = { token: 'malformed-token' };
 
-      await authMiddleware(mockReq as AuthRequest, mockRes as Response, mockNext);
+      await authenticate(mockReq as AuthRequest, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError));
       expect((mockNext as jest.Mock).mock.calls[0][0].message).toBe('Invalid token');
@@ -137,7 +137,7 @@ describe('auth middleware', () => {
 
       mockReq.cookies = { token: 'valid-jwt-token' };
 
-      await authMiddleware(mockReq as AuthRequest, mockRes as Response, mockNext);
+      await authenticate(mockReq as AuthRequest, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError));
       expect((mockNext as jest.Mock).mock.calls[0][0].message).toBe('Session expired or invalid');

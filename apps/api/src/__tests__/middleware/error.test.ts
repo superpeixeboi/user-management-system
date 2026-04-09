@@ -7,7 +7,7 @@ import {
   ForbiddenError,
   NotFoundError,
   ConflictError,
-  errorHandler,
+  handleError,
 } from '../../middleware/error';
 import { ZodError } from 'zod';
 
@@ -100,11 +100,11 @@ describe('error middleware', () => {
     });
   });
 
-  describe('errorHandler', () => {
+  describe('handleError', () => {
     it('should return 400 for ValidationError', () => {
       const error = new ValidationError('Validation failed', []);
 
-      errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
+      handleError(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -117,7 +117,7 @@ describe('error middleware', () => {
     it('should return 401 for UnauthorizedError', () => {
       const error = new UnauthorizedError('Not authorized');
 
-      errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
+      handleError(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(401);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -129,7 +129,7 @@ describe('error middleware', () => {
     it('should return 403 for ForbiddenError', () => {
       const error = new ForbiddenError('Access denied');
 
-      errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
+      handleError(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(403);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -141,7 +141,7 @@ describe('error middleware', () => {
     it('should return 404 for NotFoundError', () => {
       const error = new NotFoundError('Resource not found');
 
-      errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
+      handleError(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -153,7 +153,7 @@ describe('error middleware', () => {
     it('should return 409 for ConflictError', () => {
       const error = new ConflictError('Resource already exists');
 
-      errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
+      handleError(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(409);
       expect(mockRes.json).toHaveBeenCalledWith({
@@ -165,7 +165,7 @@ describe('error middleware', () => {
     it('should return 500 for unknown errors', () => {
       const error = new Error('Unknown error');
 
-      errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
+      handleError(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.json).toHaveBeenCalledWith({
