@@ -79,6 +79,7 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="input input-bordered"
                 required
+                data-testid="email"
               />
             </div>
             <div className="form-control">
@@ -91,6 +92,7 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="input input-bordered"
                 required
+                data-testid="password"
               />
             </div>
             {error && (

@@ -104,6 +104,7 @@ export default function Register() {
                 onChange={(e) => setFirstName(e.target.value)}
                 className="input input-bordered"
                 required
+                data-testid="firstName"
               />
             </div>
             <div className="form-control">
@@ -116,6 +117,7 @@ export default function Register() {
                 onChange={(e) => setLastName(e.target.value)}
                 className="input input-bordered"
                 required
+                data-testid="lastName"
               />
             </div>
             <div className="form-control">
@@ -128,6 +130,7 @@ export default function Register() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="input input-bordered"
                 required
+                data-testid="email"
               />
             </div>
             <div className="form-control">
@@ -143,6 +146,7 @@ export default function Register() {
                 }}
                 className="input input-bordered"
                 required
+                data-testid="password"
               />
             </div>
             <div className="form-control">
@@ -155,6 +159,7 @@ export default function Register() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="input input-bordered"
                 required
+                data-testid="confirmPassword"
               />
             </div>
             {error && (
