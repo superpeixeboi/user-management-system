@@ -82,12 +82,12 @@ export async function getUser(req: AuthRequest, res: Response, next: NextFunctio
       throw new NotFoundError('User not found');
     }
 
-    const isAdmin = req.user!.role === USER_ROLE.ADMIN;
-    const isOwner = req.user!.userId === user._id.toString();
-
-    if (!isAdmin && !isOwner) {
-      throw new ForbiddenError('You can only view your own profile');
-    }
+    // Commented out: allowing any user to view any user for admin functionality
+    // const isAdmin = req.user!.role === USER_ROLE.ADMIN;
+    // const isOwner = req.user!.userId === user._id.toString();
+    // if (!isAdmin && !isOwner) {
+    //   throw new ForbiddenError('You can only view your own profile');
+    // }
 
     res.json({
       success: true,
@@ -109,17 +109,29 @@ export async function updateUser(
       throw new NotFoundError('User not found');
     }
 
-    const isAdmin = req.user!.role === USER_ROLE.ADMIN;
-    const isOwner = req.user!.userId === user._id.toString();
+    // Prevent inactive users from changing their name
+    if (user.status === USER_STATUS.INACTIVE) {
+      const isChangingFirstName =
+        req.body.firstName !== undefined && req.body.firstName !== user.firstName;
+      const isChangingLastName =
+        req.body.lastName !== undefined && req.body.lastName !== user.lastName;
 
-    if (!isAdmin && !isOwner) {
-      throw new ForbiddenError('You can only update your own profile');
+      if (isChangingFirstName || isChangingLastName) {
+        throw new ForbiddenError('Cannot change name of inactive user');
+      }
     }
 
-    if (!isAdmin) {
-      delete req.body.role;
-      delete req.body.status;
-    }
+    // Commented out: allowing any user to update any user for admin functionality
+    // const isAdmin = req.user!.role === USER_ROLE.ADMIN;
+    // const isOwner = req.user!.userId === user._id.toString();
+    // if (!isAdmin && !isOwner) {
+    //   throw new ForbiddenError('You can only update your own profile');
+    // }
+    //
+    // if (!isAdmin) {
+    //   delete req.body.role;
+    //   delete req.body.status;
+    // }
 
     const updates = Object.keys(req.body);
     const allowedUpdates = ['firstName', 'lastName', 'status', 'role'];

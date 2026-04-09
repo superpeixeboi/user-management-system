@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, getUsers, UserListItem, Pagination } from '../../lib/api';
+import { api, getUsers, deleteUser, UserListItem, Pagination } from '../../lib/api';
 
 export default function Admin() {
   const router = useRouter();
@@ -13,6 +13,9 @@ export default function Admin() {
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -58,6 +61,25 @@ export default function Admin() {
     }
   }, [mounted, checkingAuth]);
 
+  async function handleDeleteConfirm() {
+    if (!deleteUserId) return;
+
+    setDeleting(true);
+    try {
+      const res = await deleteUser(deleteUserId);
+      if (res.success) {
+        loadUsers(pagination?.page || 1);
+        setDeleteUserId(null);
+      } else {
+        setError(res.message || 'Failed to delete user');
+      }
+    } catch {
+      setError('Failed to delete user');
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   if (!mounted || checkingAuth) {
     return (
       <div className="hero min-h-[60vh]">
@@ -70,7 +92,12 @@ export default function Admin() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">User Management</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">User Management</h1>
+        <a href="/admin/create" className="btn btn-primary">
+          + Create User
+        </a>
+      </div>
 
       {error && (
         <div className="alert alert-error mb-4">
@@ -94,20 +121,21 @@ export default function Admin() {
             <table className="table table-lg">
               <thead>
                 <tr>
-                  <th>Email</th>
                   <th>First Name</th>
                   <th>Last Name</th>
+                  <th>Email</th>
                   <th>Role</th>
                   <th>Status</th>
                   <th>Created</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
                   <tr key={user._id}>
-                    <td>{user.email}</td>
                     <td>{user.firstName}</td>
                     <td>{user.lastName}</td>
+                    <td>{user.email}</td>
                     <td>
                       <span
                         className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'}`}
@@ -123,6 +151,19 @@ export default function Admin() {
                       </span>
                     </td>
                     <td>{new Date(user.creationTime).toLocaleDateString()}</td>
+                    <td>
+                      <div className="flex gap-2">
+                        <a href={`/admin/edit/${user._id}`} className="btn btn-ghost btn-xs">
+                          ✏️
+                        </a>
+                        <button
+                          onClick={() => setDeleteUserId(user._id)}
+                          className="btn btn-ghost btn-xs text-error"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -151,6 +192,28 @@ export default function Admin() {
             </div>
           )}
         </>
+      )}
+
+      {deleteUserId && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Delete User</h3>
+            <p className="py-4">
+              Are you sure you want to delete this user? This action cannot be undone.
+            </p>
+            <div className="modal-action">
+              <button onClick={() => setDeleteUserId(null)} className="btn" disabled={deleting}>
+                Cancel
+              </button>
+              <button onClick={handleDeleteConfirm} className="btn btn-error" disabled={deleting}>
+                {deleting ? <span className="loading loading-spinner loading-sm"></span> : 'Delete'}
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button onClick={() => setDeleteUserId(null)}>close</button>
+          </form>
+        </div>
       )}
     </div>
   );

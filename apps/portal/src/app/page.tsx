@@ -28,16 +28,6 @@ export default function Home() {
     }
   }
 
-  async function handleLogout() {
-    try {
-      await api.delete('/sessions');
-    } catch {
-      // Ignore
-    }
-    setUser(null);
-    router.push('/register');
-  }
-
   if (!mounted || loading) {
     return (
       <div className="hero min-h-[60vh]">
@@ -65,9 +55,6 @@ export default function Home() {
               <span className="font-semibold">Role:</span> {user.role}
             </p>
           </div>
-          <button onClick={handleLogout} className="btn btn-primary mt-6">
-            Logout
-          </button>
         </div>
       </div>
     </div>
