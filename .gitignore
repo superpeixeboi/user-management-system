@@ -11,6 +11,9 @@ dist/
 apps/*/.turbo/
 packages/*/.turbo/
 
+# TypeScript
+.tsbuildinfo
+
 # Environment files
 .env
 .env.local

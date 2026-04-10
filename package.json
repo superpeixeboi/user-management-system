@@ -15,7 +15,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "clean": "turbo run clean",
     "typecheck": "turbo run typecheck",
-    "postinstall": "playwright install chromium || true"
+    "postinstall": "npm run build -w @user-management-system/types && playwright install chromium || true"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
