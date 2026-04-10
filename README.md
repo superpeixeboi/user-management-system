@@ -83,8 +83,8 @@ Nest adherence to SOLID principles is a good way to enforce quality in larger te
 Express is a simpler and slightly more performant option.
 
 Unit tests using Jest validate all the logic implemented in the middleware.
-
-Tests are run in isolation, mocking all external dependencies. 
+Tests are run in isolation, mocking all external dependencies.
+The API is containerized and ready to deploy to ECS, or similar services.
 
 ### Portal
 I implemented the portal app using Next, but only with CSR.
@@ -95,6 +95,9 @@ Logging in adds a token cookie that contains the session ID; the portal reads th
 The token was set to expire in 7 days, but if the user logs out the session will be terminated and the cookie cleared.
 An Axios instance was created to communicate with the API.
 Playwright was used to test the flows, mocking the API calls to ensure tests are reliable and fast.
+Of all the tests, 3 of them had to be skipped due to render timing issues. Those features were validated manually.
+
+The portal is ready to be deployed to Vercel. I had planned to containerize it to deploy to ECS too, but got out of time.
 
 ### Styles
 A Tailwind/DaisyUI build was created to provide two themes: light and dark.

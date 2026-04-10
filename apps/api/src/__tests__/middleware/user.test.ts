@@ -352,6 +352,63 @@ describe('user middleware', () => {
       expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
     });
 
+    it('should not allow updating creationTime', async () => {
+      const originalCreationTime = new Date('2024-01-01T00:00:00.000Z');
+      const userToUpdate = {
+        ...mockUser,
+        creationTime: originalCreationTime,
+        save: jest.fn().mockImplementation(function (this: Record<string, unknown>) {
+          return Promise.resolve();
+        }),
+      };
+      (User.findById as jest.Mock).mockResolvedValue(userToUpdate);
+
+      mockReq.user = {
+        sessionId: 'session-1',
+        userId: 'user-id-123',
+        email: 'user@example.com',
+        role: 'user',
+      };
+      mockReq.params = { id: 'user-id-123' };
+      mockReq.body = { firstName: 'Jane', creationTime: '2025-01-01T00:00:00.000Z' };
+
+      await updateUser(mockReq as AuthRequest, mockRes as Response, mockNext);
+
+      expect(userToUpdate.save).toHaveBeenCalled();
+      const responseData = (mockRes.json as jest.Mock).mock.calls[0][0].data;
+      expect(responseData.creationTime).toEqual(originalCreationTime);
+    });
+
+    it('should update lastUpdateTime on user update', async () => {
+      const oldLastUpdateTime = new Date('2024-01-01T00:00:00.000Z');
+      const userToUpdate = {
+        ...mockUser,
+        lastUpdateTime: oldLastUpdateTime,
+        save: jest.fn().mockImplementation(function (this: Record<string, unknown>) {
+          this.lastUpdateTime = new Date();
+          return Promise.resolve();
+        }),
+      };
+      (User.findById as jest.Mock).mockResolvedValue(userToUpdate);
+
+      mockReq.user = {
+        sessionId: 'session-1',
+        userId: 'user-id-123',
+        email: 'user@example.com',
+        role: 'user',
+      };
+      mockReq.params = { id: 'user-id-123' };
+      mockReq.body = { firstName: 'Jane' };
+
+      await updateUser(mockReq as AuthRequest, mockRes as Response, mockNext);
+
+      expect(userToUpdate.save).toHaveBeenCalled();
+      const responseData = (mockRes.json as jest.Mock).mock.calls[0][0].data;
+      expect(new Date(responseData.lastUpdateTime).getTime()).toBeGreaterThan(
+        oldLastUpdateTime.getTime()
+      );
+    });
+
     it('should throw NotFoundError for invalid ID', async () => {
       (User.findById as jest.Mock).mockResolvedValue(null);
 
