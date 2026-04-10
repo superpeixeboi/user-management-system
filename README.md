@@ -42,7 +42,7 @@ A monorepo containing a Node/Express/MongoDB API and two Next.js frontend applic
   - `MONGODB_URI` - MongoDB connection string
   - `JWT_SECRET` - JWT signing secret
 
-- **Frontend apps** (`apps/users/.env.local`, `apps/admin/.env.local`):
+- **Portal** (`apps/portal/.env.local`):
   - `NEXT_PUBLIC_API_URL` - API base URL
 
 ## Available Scripts
@@ -55,7 +55,6 @@ A monorepo containing a Node/Express/MongoDB API and two Next.js frontend applic
 
 - **Portal** (port 3000): Login/register for regular users
 - **API** (port 3001): RESTful endpoints for authentication and user CRUD
-
 
 ## Project Structure
 
