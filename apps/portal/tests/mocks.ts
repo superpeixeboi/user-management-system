@@ -164,6 +164,18 @@ export async function setupLogout(page: Page) {
       });
     }
   });
+  await page.route('**/users*', (route) => {
+    route.fulfill({
+      status: 200,
+      body: JSON.stringify({
+        success: true,
+        data: {
+          users: mockUsersList,
+          pagination: { page: 1, limit: 6, total: mockUsersList.length, totalPages: 1 },
+        },
+      }),
+    });
+  });
   await page.route('**/sessions', (route) => {
     route.fulfill({
       status: 200,

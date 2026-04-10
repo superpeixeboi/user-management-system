@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { api, getUser, updateUser, UserListItem } from '../../../../lib/api';
+import { api, getUser, updateUser } from '../../../../lib/api';
+import type { UserResponse, UserRole, UserStatus } from '@user-management-system/types';
 
 export default function EditUser() {
   const router = useRouter();
@@ -12,15 +13,15 @@ export default function EditUser() {
   const [mounted, setMounted] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const [user, setUser] = useState<UserListItem | null>(null);
+  const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [role, setRole] = useState('');
-  const [status, setStatus] = useState('');
+  const [role, setRole] = useState<UserRole>('user');
+  const [status, setStatus] = useState<UserStatus>('active');
 
   useEffect(() => {
     setMounted(true);
@@ -51,8 +52,8 @@ export default function EditUser() {
         setUser(res.data);
         setFirstName(res.data.firstName);
         setLastName(res.data.lastName);
-        setRole(res.data.role);
-        setStatus(res.data.status);
+        setRole(res.data.role as UserRole);
+        setStatus(res.data.status as UserStatus);
       } else {
         setError('User not found');
       }
@@ -174,7 +175,7 @@ export default function EditUser() {
           </label>
           <select
             value={role}
-            onChange={(e) => setRole(e.target.value)}
+            onChange={(e) => setRole(e.target.value as UserRole)}
             className="select select-bordered"
             required
           >
@@ -189,7 +190,7 @@ export default function EditUser() {
           </label>
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onChange={(e) => setStatus(e.target.value as UserStatus)}
             className="select select-bordered"
             required
           >

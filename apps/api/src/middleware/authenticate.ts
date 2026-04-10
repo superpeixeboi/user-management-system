@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyJWT, JWTPayload } from '../utils/jwt.js';
+import { verifyJWT } from '../utils/jwt.js';
 import { UnauthorizedError } from './error.js';
 import { Session } from '../models/Session.js';
+import type { JWTPayload } from '@user-management-system/types';
 
 export interface AuthRequest extends Request {
   user?: JWTPayload;

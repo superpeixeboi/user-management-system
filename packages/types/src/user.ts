@@ -26,3 +26,30 @@ export interface IUser {
 }
 
 export interface IUserDocument extends IUser, Document {}
+
+export interface UserResponse {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  status: UserStatus;
+  creationTime: string;
+  lastUpdateTime: string;
+}
+
+export interface CreateUserInput {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role?: UserRole;
+  status?: UserStatus;
+}
+
+export interface UpdateUserInput {
+  firstName?: string;
+  lastName?: string;
+  role?: UserRole;
+  status?: UserStatus;
+}

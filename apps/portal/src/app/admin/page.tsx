@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, getUsers, deleteUser, UserListItem, Pagination } from '../../lib/api';
+import { api, getUsers, deleteUser } from '../../lib/api';
+import type { UserResponse, Pagination } from '@user-management-system/types';
 
 export default function Admin() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const [users, setUsers] = useState<UserListItem[]>([]);
+  const [users, setUsers] = useState<UserResponse[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

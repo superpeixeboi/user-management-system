@@ -1,18 +1,17 @@
 import axios from 'axios';
+import type {
+  UserResponse,
+  Pagination,
+  CreateUserInput,
+  UpdateUserInput,
+} from '@user-management-system/types';
 
 export const api = axios.create({
   baseURL: 'http://localhost:3001',
   withCredentials: true,
 });
 
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  status: string;
-}
+export type User = UserResponse;
 
 export interface LoginResponse {
   success: boolean;
@@ -29,38 +28,13 @@ export interface RegisterResponse {
 
 export interface ProfileResponse {
   success: boolean;
-  data: {
-    _id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    status: string;
-  };
-}
-
-export interface Pagination {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
-
-export interface UserListItem {
-  _id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  status: string;
-  creationTime: string;
-  lastUpdateTime: string;
+  data: UserResponse;
 }
 
 export interface UsersResponse {
   success: boolean;
   data: {
-    users: UserListItem[];
+    users: UserResponse[];
     pagination: Pagination;
   };
 }
@@ -72,7 +46,7 @@ export async function getUsers(page = 1, limit = 6): Promise<UsersResponse> {
 
 export interface UserDetailResponse {
   success: boolean;
-  data: UserListItem;
+  data: UserResponse;
 }
 
 export async function getUser(id: string): Promise<UserDetailResponse> {
@@ -80,49 +54,18 @@ export async function getUser(id: string): Promise<UserDetailResponse> {
   return res.data;
 }
 
-export interface UpdateUserRequest {
-  firstName?: string;
-  lastName?: string;
-  role?: string;
-  status?: string;
-}
+export type UpdateUserRequest = UpdateUserInput;
+export type UpdateUserResponse = { success: boolean; data: UserResponse; message?: string };
 
-export interface UpdateUserResponse {
-  success: boolean;
-  data: UserListItem;
-  message?: string;
-}
-
-export async function updateUser(id: string, data: UpdateUserRequest): Promise<UpdateUserResponse> {
+export async function updateUser(id: string, data: UpdateUserInput): Promise<UpdateUserResponse> {
   const res = await api.patch(`/users/${id}`, data);
   return res.data;
 }
 
-export interface CreateUserRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  role?: string;
-  status?: string;
-}
+export type CreateUserRequest = CreateUserInput;
+export type CreateUserResponse = { success: boolean; data?: UserResponse; message?: string };
 
-export interface CreateUserResponse {
-  success: boolean;
-  data?: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    status: string;
-    creationTime: string;
-    lastUpdateTime: string;
-  };
-  message?: string;
-}
-
-export async function createUser(data: CreateUserRequest): Promise<CreateUserResponse> {
+export async function createUser(data: CreateUserInput): Promise<CreateUserResponse> {
   const res = await api.post('/users', data);
   return res.data;
 }

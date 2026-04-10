@@ -1,14 +1,8 @@
 import jwt from 'jsonwebtoken';
+import { JWTPayload } from '@user-management-system/types';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const JWT_EXPIRES_IN = '7d';
-
-export interface JWTPayload {
-  sessionId: string;
-  userId: string;
-  email: string;
-  role: string;
-}
 
 export function signJWT(payload: JWTPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });

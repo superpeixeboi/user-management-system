@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, createUser } from '../../../lib/api';
+import type { UserRole, UserStatus } from '@user-management-system/types';
 
 export default function CreateUser() {
   const router = useRouter();
@@ -14,8 +15,8 @@ export default function CreateUser() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('user');
-  const [status, setStatus] = useState('active');
+  const [role, setRole] = useState<UserRole>('user');
+  const [status, setStatus] = useState<UserStatus>('active');
 
   const [error, setError] = useState('');
   const [showPasswordHint, setShowPasswordHint] = useState(false);
@@ -185,7 +186,7 @@ export default function CreateUser() {
           </label>
           <select
             value={role}
-            onChange={(e) => setRole(e.target.value)}
+            onChange={(e) => setRole(e.target.value as UserRole)}
             className="select select-bordered"
           >
             <option value="user">User</option>
@@ -199,7 +200,7 @@ export default function CreateUser() {
           </label>
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onChange={(e) => setStatus(e.target.value as UserStatus)}
             className="select select-bordered"
           >
             <option value="active">Active</option>

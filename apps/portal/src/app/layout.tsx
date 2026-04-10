@@ -2,11 +2,12 @@
 
 import '@user-management-system/styles/index.css';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { api, User } from '../lib/api';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [user, setUser] = useState<User | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -18,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [pathname]);
 
   async function checkAuth() {
     try {
@@ -73,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="min-h-screen bg-base-100 text-base-content">
           <nav className="navbar bg-base-200 shadow-md">
             <div className="flex-1">
-              <a href="/" className="btn btn-ghost text-xl">
+              <a href="/admin" className="btn btn-ghost text-xl">
                 Portal
               </a>
             </div>

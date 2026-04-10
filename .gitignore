@@ -18,6 +18,7 @@ packages/*/.turbo/
 
 # Docker
 docker-compose.override.yml
+data/
 
 # IDE
 .vscode/
