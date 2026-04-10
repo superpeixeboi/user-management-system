@@ -75,6 +75,7 @@ Turborepo was used to manage the monorepo, it provides the base scripts and has 
 For the API, I decided on Express and implemented the middleware pattern.
 Each middleware has its own clear responsibility.
 Error handling happens on its own middleware at the end of the chain.
+
 Express is a well-known, stable, and reliable framework.
 For a project of low to medium complexity, I consider it to be a good option.
 
@@ -84,6 +85,7 @@ Express is a simpler and slightly more performant option.
 
 Unit tests using Jest validate all the logic implemented in the middleware.
 Tests are run in isolation, mocking all external dependencies.
+
 The API is containerized and ready to deploy to ECS, or similar services.
 
 ### Portal
@@ -93,7 +95,9 @@ Otherwise, I will always favor the 'Keep It Simple' principle.
 
 Logging in adds a token cookie that contains the session ID; the portal reads the cookie and reacts accordingly.
 The token was set to expire in 7 days, but if the user logs out the session will be terminated and the cookie cleared.
+
 An Axios instance was created to communicate with the API.
+
 Playwright was used to test the flows, mocking the API calls to ensure tests are reliable and fast.
 Of all the tests, 3 of them had to be skipped due to render timing issues. Those features were validated manually.
 
@@ -102,8 +106,9 @@ The portal is ready to be deployed to Vercel. I had planned to containerize it t
 ### Styles
 A Tailwind/DaisyUI build was created to provide two themes: light and dark.
 They are changed by setting the data-theme property in the html tag and the option stored in the localstorage.
-Tailwind is a very popular CSS framework; combined with DaisyUI, they provide a flexible and clean option for styles.
-I tend to choose agnostic CSS options instead of component libraries like MaterialUI.
+
+Tailwind is a very popular CSS framework, and combined with DaisyUI they provide a flexible and clean option for styles.
+I tend to choose agnostic CSS options instead of component libraries like MaterialUI for ease of maintenance and upgrade.
 
 ### Types
 The project's types and interfaces were extracted to their own package to keep the code clean and improve readability.
