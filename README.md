@@ -7,6 +7,56 @@ A monorepo containing a Node/Express/MongoDB API and two Next.js frontend applic
 - **Node.js** v22+
 - **Docker** - Required to run MongoDB
 
+## Getting Started
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Start the development environment:
+
+   ```bash
+   npm run dev
+   ```
+
+   This will:
+   - Start MongoDB container (port 27017)
+   - Start API on http://localhost:3001
+   - Start user portal on http://localhost:3000
+
+3. Run tests
+
+   ```bash
+   npm test
+   ```
+
+  This will run both api and portal tests
+  Tests can also be run individually from the app folder
+
+## Environment Variables
+
+- **API** (`apps/api/.env`):
+  - `PORT` - API port (default: 3001)
+  - `MONGODB_URI` - MongoDB connection string
+  - `JWT_SECRET` - JWT signing secret
+
+- **Frontend apps** (`apps/users/.env.local`, `apps/admin/.env.local`):
+  - `NEXT_PUBLIC_API_URL` - API base URL
+
+## Available Scripts
+
+- `npm run dev` - Start all services in development mode
+- `npm run build` - Build all packages/apps
+- `npm run clean` - Clean build artifacts
+
+## Features
+
+- **Portal** (port 3000): Login/register for regular users
+- **API** (port 3001): RESTful endpoints for authentication and user CRUD
+
+
 ## Project Structure
 
 ```
@@ -60,44 +110,3 @@ Considering that the project could grow in the future, I find it a good approach
 ### AI
 To speed up development and take care of manual tasks, I used Opencode as the agent and Minimax as the model.
 Every architectural decision was made by me, and every implementation by the agent was carefully observed and reviewed by me.
-
-## Getting Started
-
-1. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-2. Start the development environment:
-
-   ```bash
-   npm run dev
-   ```
-
-   This will:
-   - Start MongoDB container (port 27017)
-   - Start API on http://localhost:3001
-   - Start user portal on http://localhost:3000
-
-## Environment Variables
-
-- **API** (`apps/api/.env`):
-  - `PORT` - API port (default: 3001)
-  - `MONGODB_URI` - MongoDB connection string
-  - `JWT_SECRET` - JWT signing secret
-
-- **Frontend apps** (`apps/users/.env.local`, `apps/admin/.env.local`):
-  - `NEXT_PUBLIC_API_URL` - API base URL
-
-## Available Scripts
-
-- `npm run dev` - Start all services in development mode
-- `npm run build` - Build all packages/apps
-- `npm run clean` - Clean build artifacts
-
-## Features
-
-- **Portal** (port 3000): Login/register for regular users
-- **Admin Dashboard** (port 3000/admin): User management (admin only)
-- **API** (port 3001): RESTful endpoints for authentication and user CRUD
